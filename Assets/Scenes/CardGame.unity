@@ -407,12 +407,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d8038ccbdeb34d0b963011cfdaf4645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: {x: 3, y: 4}
+  gridSize: {x: 3, y: 5}
   prefabCards:
   - {fileID: 8372554132849567661, guid: eae7e3db2b10e495194ab641e77c5f2d, type: 3}
   - {fileID: 8372554132849567661, guid: 73041bb33d02142daa838ccb2460f8f7, type: 3}
   - {fileID: 8372554132849567661, guid: c9b3682b69abb4a67ae035a87bade291, type: 3}
   - {fileID: 8372554132849567661, guid: 80afe6ef3c42e4974aebb30ef5b1dad0, type: 3}
+  prefabCardEmpty: {fileID: 8372554132849567661, guid: 7aef9e315daa04b399f2f825e17b519a, type: 3}
   canvas: {fileID: 817011012}
   runtimeStack: []
 --- !u!4 &1908059041

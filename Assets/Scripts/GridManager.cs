@@ -9,6 +9,8 @@ namespace OllieJones
     {
         [SerializeField] private Vector2Int gridSize = new Vector2Int(2, 3);
         [SerializeField] private List<GameObject> prefabCards = new List<GameObject>();
+        [SerializeField] private GameObject prefabCardEmpty;
+
         [SerializeField] private RectTransform canvas;
         [SerializeField] private List<CardModule> runtimeStack = new List<CardModule>();
 
@@ -36,6 +38,35 @@ namespace OllieJones
 
             ClearGrid();
 
+            // Layout settings
+            float canvasWidth = canvas.rect.width;
+            float canvasHeight = canvas.rect.height;
+            float padding = 40f; // total border space on each side
+
+            /*
+             * The cards should scale to fit the target display area, 
+             * whether it's the screen or another container widget.
+             */
+
+            // Available space for cards (minus padding)
+            float availableWidth = canvasWidth - padding;
+            float availableHeight = canvasHeight - padding;
+
+            // Add small gaps between cards as a fraction of card size
+            float spacingRatio = 0.1f; // 10% of card size will be spacing
+
+            // Calculate the max card size that fits both horizontally and vertically
+            float cardWidth = availableWidth / (gridSize.x + (gridSize.x - 1) * spacingRatio);
+            float cardHeight = availableHeight / (gridSize.y + (gridSize.y - 1) * spacingRatio);
+            float cardSize = Mathf.Min(cardWidth, cardHeight);
+            float spacing = cardSize * spacingRatio;
+
+            // Position cards centrally within the canvas
+            float totalWidth = gridSize.x * cardSize + (gridSize.x - 1) * spacing;
+            float totalHeight = gridSize.y * cardSize + (gridSize.y - 1) * spacing;
+            Vector2 offset = new Vector2(-totalWidth / 2f + cardSize / 2f, -totalHeight / 2f + cardSize / 2f);
+
+
             int i = 0;
             for (int y = 0; y < gridSize.y; y++)
             {
@@ -44,7 +75,13 @@ namespace OllieJones
                     CardModule card = Instantiate(cards[i], canvas.transform).GetComponent<CardModule>();
                     card.Initiate(new Vector2Int(x,y));
 
-                    card.transform.localPosition = new Vector3(x * 100, y * 100, 0);
+                    // Position, scale dynamically & centered
+                    RectTransform rt = card.GetComponent<RectTransform>();
+                    rt.sizeDelta = new Vector2(cardSize, cardSize);
+
+                    float posX = x * (cardSize + spacing) + offset.x;
+                    float posY = y * (cardSize + spacing) + offset.y;
+                    rt.localPosition = new Vector3(posX, posY, 0);
 
                     runtimeStack.Add(card);
                     i++;
@@ -63,7 +100,6 @@ namespace OllieJones
         }
 
         // Generates a valid random list of cards for a given grid size, and shuffles them
-        // TODO accommodate for odd grid format
         public List<GameObject> GenerateCardPairsPrefab(Vector2Int gridSize)
         {
             List<GameObject> pairs = new List<GameObject>();
@@ -79,6 +115,12 @@ namespace OllieJones
                 // Add each card twice (the pair)
                 pairs.Add(prefabCards[random]);
                 pairs.Add(prefabCards[random]);
+            }
+
+            // If we have an odd number of cells, add an empty tile
+            if (totalCells % 2 != 0 && prefabCardEmpty != null)
+            {
+                pairs.Add(prefabCardEmpty);
             }
 
             Shuffle(pairs);

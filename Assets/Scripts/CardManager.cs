@@ -148,6 +148,8 @@ namespace OllieJones
             }
             else
             {
+                yield return new WaitForSeconds(0.25f);
+
                 Debug.Log("No Match");
 
                 cardA.FlipCard();
@@ -168,7 +170,7 @@ namespace OllieJones
         {
             foreach(CardModule card in grid.RuntimeStack())
             {
-                if (card.IsMatched() == false) return false;
+                if (card.IsMatched() == false && card.IsEmpty() == false) return false;
             }
 
             return true;

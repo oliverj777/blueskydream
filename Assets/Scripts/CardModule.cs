@@ -24,19 +24,29 @@ namespace OllieJones
             this.img = GetComponent<Image>();
             this.imgColor = img.color; // Cache the color, used when flipping
             this.graphic = transform.GetChild(0).GetComponent<Image>();
+            this.graphic.raycastTarget = false;
         }
 
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            transform.SetAsLastSibling();
+            if (IsEmpty()) return;
+            if (IsMatched()) return;
+            if (hidden == false) return;
 
+            transform.SetAsLastSibling();
             CardManager.Instance.OnCardSelected(this);
         }
 
         public bool IsMatched()
         {
             return matched;
+        }
+
+        public bool IsEmpty()
+        {
+            if (string.IsNullOrEmpty(nameTag)) return true;
+            return false;
         }
 
         public Vector2Int Coordinates()
@@ -46,7 +56,8 @@ namespace OllieJones
 
         public void FlipCard()
         {
-            if (matched) return;
+            if (IsEmpty()) return;
+            if (IsMatched()) return;
             hidden = !hidden;
 
             StartCoroutine(CoroutineFlipCard());

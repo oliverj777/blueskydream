@@ -442,6 +442,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 582b9ecc11f374a3cbd7c0a2286cdf39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedStack: []
+  grid: {fileID: 1908059040}
+  OnEventCardSelected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEventCardsMatched:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEventCardsNoMatch:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEventGameComplete:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &4733990185715699418
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -12,6 +12,11 @@ namespace OllieJones
         [SerializeField] private RectTransform canvas;
         [SerializeField] private List<CardModule> runtimeStack = new List<CardModule>();
 
+        public List<CardModule> RuntimeStack()
+        {
+            return runtimeStack;
+        }
+
         private void Start()
         {
             List<GameObject> cards = GenerateCardPairsPrefab(gridSize);

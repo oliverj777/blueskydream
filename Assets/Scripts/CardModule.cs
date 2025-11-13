@@ -12,9 +12,16 @@ namespace OllieJones
         public string nameTag; // Use this to determine match (unique ID)
         [SerializeField] private Vector2Int coordinate;
 
+        [SerializeField] private bool hidden = false;
+        [SerializeField] private bool matched = false;
+        private Image img;
+        private Color imgColor;
+
         public void Initiate(Vector2Int coordinate)
         {
             this.coordinate = coordinate;
+            this.img = GetComponent<Image>();
+            this.imgColor = img.color; // Cache the color, used when flipping
         }
 
 
@@ -23,6 +30,25 @@ namespace OllieJones
             transform.SetAsLastSibling();
 
             CardManager.Instance.OnCardSelected(this);
+        }
+
+        // Called when the CheckGameState declares this card matched with another card
+        public void MatchCard(CardModule otherCard)
+        {
+            matched = true;
+        }
+        public bool IsMatched()
+        {
+            return matched;
+        }
+
+        public void FlipCard()
+        {
+            if (matched) return;
+            hidden = !hidden;
+
+            if (hidden) img.color = Color.gray;
+            else img.color = imgColor;
         }
     }
 

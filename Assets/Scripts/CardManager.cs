@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace OllieJones
 {
@@ -10,11 +11,24 @@ namespace OllieJones
         public static CardManager Instance;
 
         [SerializeField] private List<CardModule> selectedStack = new List<CardModule>();
+        [SerializeField] private GridManager grid;
+
+        // Public Events
+        public UnityEvent<CardModule> OnEventCardSelected;
+        public UnityEvent<CardModule, CardModule> OnEventCardsMatched;
+        public UnityEvent<CardModule, CardModule> OnEventCardsNoMatch;
+        public UnityEvent OnEventGameComplete;
+
 
         private void Awake()
         {
             // Using singleton static instance for global access, but happy to work with dependency injection too.
             Instance = this;
+        }
+
+        private void Start()
+        {
+            StartCoroutine(CoroutineRevealOpening());
         }
 
 
@@ -43,8 +57,22 @@ namespace OllieJones
         {
             Debug.Log("Card Selected: " + card.nameTag, card.transform);
 
+            card.FlipCard();
+
             selectedStack.Add(card);
             CheckGameState();
+        }
+
+
+        IEnumerator CoroutineRevealOpening()
+        {
+            // Wait and flip cards
+            yield return new WaitForSeconds(3);
+
+            foreach (CardModule card in grid.RuntimeStack())
+            {
+                card.FlipCard();
+            }
         }
 
         /* NOTE ---
@@ -59,17 +87,53 @@ namespace OllieJones
             CardModule cardA = selectedStack[0];
             CardModule cardB = selectedStack[1];
 
-            if (cardA.nameTag == cardB.nameTag)
+            // Handover to coroutine to deal with timed events/animations
+            StartCoroutine(CoroutineCheckGameState(cardA, cardB));
+
+            // Clear the selected for retry
+            selectedStack.Clear();
+        }
+
+        IEnumerator CoroutineCheckGameState(CardModule cardA, CardModule cardB)
+        {
+            yield return new WaitForSeconds(0.25f);
+
+            // Match
+            if(cardA.nameTag == cardB.nameTag)
             {
-                Debug.Log("Its a Match!");
+                Debug.Log("Match!");
+
+                cardA.MatchCard(cardB);
+                cardB.MatchCard(cardA);
+
+                OnEventCardsMatched?.Invoke(cardA, cardB);
+
+                if (HasMatchedAll())
+                {
+                    Debug.Log("* WON *");
+
+                    OnEventGameComplete?.Invoke();
+                }
             }
             else
             {
                 Debug.Log("No Match");
+
+                cardA.FlipCard();
+                cardB.FlipCard();
+
+                OnEventCardsNoMatch?.Invoke(cardA, cardB);
+            }
+        }
+
+        bool HasMatchedAll()
+        {
+            foreach(CardModule card in grid.RuntimeStack())
+            {
+                if (card.IsMatched() == false) return false;
             }
 
-            // Clear the selected for retry
-            selectedStack.Clear();
+            return true;
         }
     }
 

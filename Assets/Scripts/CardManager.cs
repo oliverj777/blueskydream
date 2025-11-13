@@ -89,7 +89,7 @@ namespace OllieJones
             OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter, currentTimer);
         }
 
-        private void NewGame()
+        public void NewGame()
         {
             currentLevel++;
             //TODO, add dynamic difficulty system
@@ -100,6 +100,8 @@ namespace OllieJones
                 comboCounter = 0;
 
             BuildGame();
+
+            OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter, currentTimer);
         }
 
         private void StopGame()
@@ -256,8 +258,9 @@ namespace OllieJones
 
                     OnEventGameComplete?.Invoke(GameReport.Won);
 
-                    yield return new WaitForSeconds(Config().GameResetTime);
-                    NewGame();
+                    // Let the UI view deal with this
+                    //yield return new WaitForSeconds(Config().GameResetTime);
+                    //NewGame();
                 }
             }
             else

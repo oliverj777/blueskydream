@@ -20,6 +20,7 @@ namespace OllieJones
         [Header("Won Panel")]
         [SerializeField] private CanvasRenderer wonPanel;
         [SerializeField] private TMP_Text wonText;
+        [SerializeField] private Button wonBtn;
 
         private void Awake()
         {
@@ -27,6 +28,7 @@ namespace OllieJones
             wonPanel.gameObject.SetActive(false);
 
             lostBtn.onClick.AddListener(HandlerButtonTryAgain);
+            wonBtn.onClick.AddListener(HandlerButtonNextGame);
         }
 
         private void Start()
@@ -76,7 +78,10 @@ namespace OllieJones
 
         private void HandlerOnGameComplete(CardManager.GameReport reason)
         {
+            string msg = "Nicely done!";
 
+            wonText.text = msg;
+            wonPanel.gameObject.SetActive(true);
         }
 
         private void HandlerOnGameFailed(CardManager.GameReport reason)
@@ -107,7 +112,16 @@ namespace OllieJones
 
         }
 
-        
+        private void HandlerButtonNextGame()
+        {
+            CardManager.Instance.NewGame();
+
+            lostPanel.gameObject.SetActive(false);
+            wonPanel.gameObject.SetActive(false);
+
+        }
+
+
     }
 
 }

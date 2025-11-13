@@ -131,6 +131,7 @@ namespace OllieJones
                 int points = comboPointMatch * (comboCounter);
                 currentScore += points;
 
+                // Event triggers
                 OnEventCardsMatched?.Invoke(cardA, cardB);
                 OnEventGameLoopUpdate?.Invoke(currentScore, points, comboCounter);
 
@@ -157,7 +158,9 @@ namespace OllieJones
                 int points = comboPointNoMatch;
                 currentScore += points;
 
+                // Event triggers
                 OnEventCardsNoMatch?.Invoke(cardA, cardB);
+                OnEventGameLoopUpdate?.Invoke(currentScore, points, comboCounter);
             }
         }
 

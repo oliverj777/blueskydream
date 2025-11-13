@@ -21,6 +21,9 @@ namespace OllieJones
 
             //Serialise the game/cards into JSON children
             JSONObject json = new JSONObject();
+            json["level"] = manager.currentLevel;
+            json["score"] = manager.currentScore;
+            json["combo"] = manager.comboCounter;
             json["size_x"] = grid.GridSize().x;
             json["size_y"] = grid.GridSize().y;
 
@@ -65,6 +68,11 @@ namespace OllieJones
                 string nameTag = c["tag"].Value;
                 cards.Add(grid.GetCardPrefab(nameTag));
             }
+
+            // Inject game score
+            manager.currentLevel = json["level"].AsInt;
+            manager.currentScore = json["score"].AsInt;
+            manager.comboCounter = json["combo"].AsInt;
 
             manager.InjectGame(gridSize, cards);
 

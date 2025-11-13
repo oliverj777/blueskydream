@@ -19,8 +19,9 @@ namespace OllieJones
 
         private void Start()
         {
-            List<GameObject> cards = GenerateCardPairsPrefab(gridSize);
-            BuildGrid(gridSize, cards);
+            // Let card manager deal with starting a grid build
+            //List<GameObject> cards = GenerateCardPairsPrefab(gridSize);
+            //BuildGrid(gridSize, cards);
         }
 
         public Vector2Int GridSize()
@@ -63,7 +64,7 @@ namespace OllieJones
 
         // Generates a valid random list of cards for a given grid size, and shuffles them
         // TODO accommodate for odd grid format
-        private List<GameObject> GenerateCardPairsPrefab(Vector2Int gridSize)
+        public List<GameObject> GenerateCardPairsPrefab(Vector2Int gridSize)
         {
             List<GameObject> pairs = new List<GameObject>();
 

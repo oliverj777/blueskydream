@@ -124,6 +124,9 @@ namespace OllieJones
                     Debug.Log("* WON *");
 
                     OnEventGameComplete?.Invoke();
+
+                    yield return new WaitForSeconds(2);
+                    NewGame();
                 }
             }
             else

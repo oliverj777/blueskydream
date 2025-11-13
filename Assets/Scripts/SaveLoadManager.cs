@@ -26,6 +26,7 @@ namespace OllieJones
         // As this is called on any game update, use it to run autosave
         private void HandlerOnGameLoopUpdate(int score, int points, int combo)
         {
+            if (points == 0) return; // If no points, then user didn't actually take turn, but is start of new session
             RunAutoSave();
         }
 

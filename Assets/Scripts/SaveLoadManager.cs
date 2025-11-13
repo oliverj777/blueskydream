@@ -9,6 +9,33 @@ namespace OllieJones
 {
     public class SaveLoadManager : MonoBehaviour
     {
+        [SerializeField] bool autoSave = true;
+        [SerializeField] bool autoLoad = true;
+
+        private void Start()
+        {
+            CardManager.Instance.OnEventGameLoopUpdate.AddListener(HandlerOnGameLoopUpdate);
+
+            if (autoLoad)
+            {
+                Debug.Log("Auto load enabled");
+                LoadGameState();
+            }
+        }
+
+        // As this is called on any game update, use it to run autosave
+        private void HandlerOnGameLoopUpdate(int score, int points, int combo)
+        {
+            RunAutoSave();
+        }
+
+        private void RunAutoSave()
+        {
+            if (autoSave == false) return;
+            SaveGameState();
+        }
+
+
         [ContextMenu("SaveGameState")]
         public void SaveGameState()
         {

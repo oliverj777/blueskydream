@@ -20,6 +20,9 @@ namespace OllieJones
         public float GameRevealTime = 3; //Seconds it'll wait at a new game, until the cards are hidden
         public float GameResetTime = 2; //Seconds it'll wait until a new game will start (wait for animation)
         public int GameMaxTimer = 30; // Seconds to complete a game
+
+        [Header("Game Settings")]
+        public bool RestartGameWithSameOrder = false; //If true, the game will restart with the same order of cards as before.
     }
 
 }

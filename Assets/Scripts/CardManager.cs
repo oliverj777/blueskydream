@@ -33,9 +33,12 @@ namespace OllieJones
         public UnityEvent<CardModule> OnEventCardSelected;
         public UnityEvent<CardModule, CardModule> OnEventCardsMatched;
         public UnityEvent<CardModule, CardModule> OnEventCardsNoMatch;
+
         public UnityEvent<int, int, int, int> OnEventGameLoopUpdate; //current score, points, combo, timer
+
+        public UnityEvent OnEventGameStart;
         public UnityEvent<GameReport> OnEventGameComplete;
-        public UnityEvent<GameReport> OnEventFailedComplete;
+        public UnityEvent<GameReport> OnEventGameFailed;
 
         public enum GameReport { Progress, Won, Lost_Score, Lost_Timer }
 
@@ -102,15 +105,25 @@ namespace OllieJones
             if (injected == false) fTimer = Config().GameMaxTimer;
             else fTimer = currentTimer;
             gameStarted = true;
+
+            OnEventGameStart?.Invoke();
         }
 
         private void LostGame(GameReport reason)
         {
             gameStarted = false;
             Debug.Log(" ** GAMEOVER ** " + reason);
+
+            OnEventGameFailed?.Invoke(reason);
         }
 
-        
+        public void RestartGame()
+        {
+            //TODO, add restart logic;
+        }
+
+
+
         private void Update()
         {
             if (gameStarted == false) return;

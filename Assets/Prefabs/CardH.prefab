@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a755ad2a9555acb418eb593cafd7c86b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ac8afb5112d7f4a4ca07a1ec092a87c7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4921976061185679546}
   - component: {fileID: 2625111412198135316}
   m_Layer: 5
-  m_Name: CardB
+  m_Name: CardH
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8679245, g: 0.70032704, b: 0.33161268, a: 1}
+  m_Color: {r: 0.47770554, g: 0.8962264, b: 0.51876837, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16b4e369cd85743b1973702d8e47dc68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameTag: B
+  nameTag: H
   coordinate: {x: 0, y: 0}
   hidden: 0
   matched: 0

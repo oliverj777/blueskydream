@@ -327,8 +327,8 @@ Camera:
   m_GameObject: {fileID: 1078200623}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -413,6 +413,13 @@ MonoBehaviour:
   - {fileID: 8372554132849567661, guid: 73041bb33d02142daa838ccb2460f8f7, type: 3}
   - {fileID: 8372554132849567661, guid: c9b3682b69abb4a67ae035a87bade291, type: 3}
   - {fileID: 8372554132849567661, guid: 80afe6ef3c42e4974aebb30ef5b1dad0, type: 3}
+  - {fileID: 8372554132849567661, guid: 58377cb1abb094b1ebcd16cccf874259, type: 3}
+  - {fileID: 8372554132849567661, guid: e566e2689c0e94f4f9f970057655660f, type: 3}
+  - {fileID: 8372554132849567661, guid: 20b1c8bc6e437416b8d40640163e4036, type: 3}
+  - {fileID: 8372554132849567661, guid: d83f5058bd28c49e4b9a27f0b7a4ef2c, type: 3}
+  - {fileID: 8372554132849567661, guid: fb5e649b687ab4a699581afb6d62926c, type: 3}
+  - {fileID: 8372554132849567661, guid: 88036bd39670248e6a68c431ee07e7be, type: 3}
+  - {fileID: 8372554132849567661, guid: 9818169f7101c4c11a25fc726f859875, type: 3}
   prefabCardEmpty: {fileID: 8372554132849567661, guid: 7aef9e315daa04b399f2f825e17b519a, type: 3}
   canvas: {fileID: 817011012}
   runtimeStack: []

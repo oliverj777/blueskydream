@@ -95,8 +95,16 @@ namespace OllieJones
 
             yield return new WaitForSeconds((flipTime / 2f));
 
-            if (hidden) img.color = Color.gray;
-            else img.color = imgColor;
+            if (hidden)
+            {
+                img.color = Color.gray;
+                graphic.enabled = false;
+            }
+            else
+            {
+                img.color = imgColor;
+                graphic.enabled = true;
+            }
 
             iTween.ValueTo(gameObject, iTween.Hash(
                "from", 0f,

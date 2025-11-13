@@ -76,6 +76,7 @@ namespace OllieJones
         {
             Debug.Log("Card Selected: " + card.nameTag, card.transform);
 
+            AudioManager.Instance.PlayCardFlip();
             card.FlipCard();
 
             selectedStack.Add(card);
@@ -124,6 +125,7 @@ namespace OllieJones
             {
                 Debug.Log("Match!");
 
+                AudioManager.Instance.PlayCardMatch();
                 cardA.MatchCard(cardB);
                 cardB.MatchCard(cardA);
 
@@ -153,6 +155,7 @@ namespace OllieJones
 
                 Debug.Log("No Match");
 
+                AudioManager.Instance.PlayCardFlop();
                 cardA.FlipCard();
                 cardB.FlipCard();
 

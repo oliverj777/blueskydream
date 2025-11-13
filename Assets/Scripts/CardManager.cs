@@ -13,10 +13,20 @@ namespace OllieJones
         [SerializeField] private List<CardModule> selectedStack = new List<CardModule>();
         public GridManager grid;
 
+        // Game Logic
+        public int currentLevel = 0;
+        private float revealWait = 3;
+        public int comboCounter = 0;
+        public int currentScore;
+
+        readonly int comboPointMatch = 10;
+        readonly int comboPointNoMatch = -1;
+
         // Public Events
         public UnityEvent<CardModule> OnEventCardSelected;
         public UnityEvent<CardModule, CardModule> OnEventCardsMatched;
         public UnityEvent<CardModule, CardModule> OnEventCardsNoMatch;
+        public UnityEvent<int, int, int> OnEventGameLoopUpdate; //current score, points, combo
         public UnityEvent OnEventGameComplete;
 
 
@@ -30,7 +40,6 @@ namespace OllieJones
         {
             BuildGame();
         }
-
 
         private void BuildGame()
         {
@@ -54,7 +63,6 @@ namespace OllieJones
 
         private void StopGame()
         {
-            //TODO, clears any coroutines and game data
             if(corRevealOpening != null)
             {
                 StopCoroutine(corRevealOpening);
@@ -73,11 +81,13 @@ namespace OllieJones
             CheckGameState();
         }
 
+        // ---------- Game Drivers ---------- //
+
         Coroutine corRevealOpening;
         IEnumerator CoroutineRevealOpening()
         {
             // Wait and flip cards
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(revealWait);
 
             foreach (CardModule card in grid.RuntimeStack())
             {
@@ -116,7 +126,13 @@ namespace OllieJones
                 cardA.MatchCard(cardB);
                 cardB.MatchCard(cardA);
 
+                // Increment combo
+                comboCounter++;
+                int points = comboPointMatch * (comboCounter);
+                currentScore += points;
+
                 OnEventCardsMatched?.Invoke(cardA, cardB);
+                OnEventGameLoopUpdate?.Invoke(currentScore, points, comboCounter);
 
                 // Check for game progress
                 if (HasMatchedAll())
@@ -135,6 +151,11 @@ namespace OllieJones
 
                 cardA.FlipCard();
                 cardB.FlipCard();
+
+                // Reset combo
+                comboCounter = 0;
+                int points = comboPointNoMatch;
+                currentScore += points;
 
                 OnEventCardsNoMatch?.Invoke(cardA, cardB);
             }

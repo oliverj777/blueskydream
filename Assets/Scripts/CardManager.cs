@@ -19,6 +19,11 @@ namespace OllieJones
         //private float revealWait = 3; //TODO, make this dynamic based on level
         public int comboCounter = 0;
         public int currentScore;
+        public int currentTimer;
+
+        private bool injected = false;
+        private bool gameStarted = false;
+        private float fTimer = 0;
 
         // Moved to configs
         //readonly int comboPointMatch = 10;
@@ -28,9 +33,11 @@ namespace OllieJones
         public UnityEvent<CardModule> OnEventCardSelected;
         public UnityEvent<CardModule, CardModule> OnEventCardsMatched;
         public UnityEvent<CardModule, CardModule> OnEventCardsNoMatch;
-        public UnityEvent<int, int, int> OnEventGameLoopUpdate; //current score, points, combo
-        public UnityEvent OnEventGameComplete;
+        public UnityEvent<int, int, int, int> OnEventGameLoopUpdate; //current score, points, combo, timer
+        public UnityEvent<GameReport> OnEventGameComplete;
+        public UnityEvent<GameReport> OnEventFailedComplete;
 
+        public enum GameReport { Progress, Won, Lost_Score, Lost_Timer }
 
         private void Awake()
         {
@@ -53,6 +60,8 @@ namespace OllieJones
 
         private void BuildGame()
         {
+            injected = false;
+
             StopGame();
             List<GameObject> cards = grid.GenerateCardPairsPrefab(grid.GridSize());
             grid.BuildGrid(grid.GridSize(), cards);
@@ -61,29 +70,63 @@ namespace OllieJones
 
         public void InjectGame(Vector2Int gridSize, List<GameObject> cards)
         {
+            injected = true;
+
             StopGame();
             grid.BuildGrid(gridSize, cards);
             corRevealOpening = StartCoroutine(CoroutineRevealOpening());
-            OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter);
+            OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter, currentTimer);
         }
 
         private void NewGame()
         {
-            //TODO, game loop, once a game has been completed
+            currentLevel++;
+            //TODO, add dynamic difficulty system
+
+            BuildGame();
         }
 
         private void StopGame()
         {
-            if(corRevealOpening != null)
+            gameStarted = false;
+
+            if (corRevealOpening != null)
             {
                 StopCoroutine(corRevealOpening);
                 corRevealOpening = null;
             }
         }
 
+        private void StartGame()
+        {
+            if (injected == false) fTimer = Config().GameMaxTimer;
+            else fTimer = currentTimer;
+            gameStarted = true;
+        }
+
+        private void LostGame(GameReport reason)
+        {
+            gameStarted = false;
+            Debug.Log(" ** GAMEOVER ** " + reason);
+        }
+
+        
+        private void Update()
+        {
+            if (gameStarted == false) return;
+
+            fTimer -= Time.deltaTime;
+            currentTimer = Mathf.RoundToInt(fTimer);
+
+            CheckGameLoop();
+        }
+
+
         // Called directly from the CardModule
         public void OnCardSelected(CardModule card)
         {
+            if (gameStarted == false) return;
+
             Debug.Log("Card Selected: " + card.nameTag, card.transform);
 
             AudioManager.Instance.PlayCardFlip();
@@ -105,6 +148,8 @@ namespace OllieJones
             {
                 card.FlipCard();
             }
+
+            StartGame();
         }
 
         /* NOTE ---
@@ -124,6 +169,21 @@ namespace OllieJones
 
             // Clear the selected for retry
             selectedStack.Clear();
+        }
+
+        private void CheckGameLoop()
+        {
+            if (fTimer <= 0)
+            {
+                LostGame(GameReport.Lost_Timer);
+                gameStarted = false;
+            }
+
+            if (currentScore < 0)
+            {
+                LostGame(GameReport.Lost_Score);
+                gameStarted = false;
+            }
         }
 
         IEnumerator CoroutineCheckGameState(CardModule cardA, CardModule cardB)
@@ -146,14 +206,14 @@ namespace OllieJones
 
                 // Event triggers
                 OnEventCardsMatched?.Invoke(cardA, cardB);
-                OnEventGameLoopUpdate?.Invoke(currentScore, points, comboCounter);
+                OnEventGameLoopUpdate?.Invoke(currentScore, points, comboCounter, currentTimer);
 
                 // Check for game progress
                 if (HasMatchedAll())
                 {
                     Debug.Log("* WON *");
 
-                    OnEventGameComplete?.Invoke();
+                    OnEventGameComplete?.Invoke(GameReport.Won);
 
                     yield return new WaitForSeconds(Config().GameResetTime);
                     NewGame();
@@ -176,7 +236,7 @@ namespace OllieJones
 
                 // Event triggers
                 OnEventCardsNoMatch?.Invoke(cardA, cardB);
-                OnEventGameLoopUpdate?.Invoke(currentScore, points, comboCounter);
+                OnEventGameLoopUpdate?.Invoke(currentScore, points, comboCounter, currentTimer);
             }
         }
 

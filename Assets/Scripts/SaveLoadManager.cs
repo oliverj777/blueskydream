@@ -24,7 +24,7 @@ namespace OllieJones
         }
 
         // As this is called on any game update, use it to run autosave
-        private void HandlerOnGameLoopUpdate(int score, int points, int combo)
+        private void HandlerOnGameLoopUpdate(int score, int points, int combo, int currentTimer)
         {
             if (points == 0) return; // If no points, then user didn't actually take turn, but is start of new session
             RunAutoSave();
@@ -52,6 +52,7 @@ namespace OllieJones
             json["level"] = manager.currentLevel;
             json["score"] = manager.currentScore;
             json["combo"] = manager.comboCounter;
+            json["timer"] = manager.currentTimer;
             json["size_x"] = grid.GridSize().x;
             json["size_y"] = grid.GridSize().y;
 
@@ -101,10 +102,11 @@ namespace OllieJones
             manager.currentLevel = json["level"].AsInt;
             manager.currentScore = json["score"].AsInt;
             manager.comboCounter = json["combo"].AsInt;
-
+            
+            // Note, this will reset states in card manager
             manager.InjectGame(gridSize, cards);
 
-            // Inject the match state of each card
+            // Inject the match state of each card after injection
             foreach (JSONObject c in json["stack"].AsArray)
             {
                 bool matched = c["matched"].AsBool;
@@ -115,6 +117,8 @@ namespace OllieJones
                 if (matched)
                     grid.GetCardModule(x, y).MatchCard(null);
             }
+
+            manager.currentTimer = json["timer"].AsInt;
         }
     }
 

@@ -10,7 +10,6 @@ namespace OllieJones
         //TODO, use this to store game settings / configs as ScriptableObject, for easy refinement
 
         [Header("Card Settings")]
-        //public float cardCooling = 0.25f;
         public float CardFlipTime = 0.25f;
 
         [Header("Score Settings")]
@@ -18,8 +17,9 @@ namespace OllieJones
         public int ComboPointNoMatch = -1;
 
         [Header("Timer Settings")]
-        public float GameRevealTime = 3;
-        public float GameResetTime = 2;
+        public float GameRevealTime = 3; //Seconds it'll wait at a new game, until the cards are hidden
+        public float GameResetTime = 2; //Seconds it'll wait until a new game will start (wait for animation)
+        public int GameMaxTimer = 30; // Seconds to complete a game
     }
 
 }

@@ -10,6 +10,7 @@ namespace OllieJones
     public class SaveLoadManager : MonoBehaviour
     {
         [SerializeField] bool autoSave = true;
+        [SerializeField] bool autoSaveOnShutdown = false;
         [SerializeField] bool autoLoad = true;
 
         private void Start()
@@ -22,6 +23,12 @@ namespace OllieJones
                 LoadGameState();
             }
         }
+
+        private void OnDisable()
+        {
+            if (autoSaveOnShutdown) SaveGameState();
+        }
+
 
         // As this is called on any game update, use it to run autosave
         private void HandlerOnGameLoopUpdate(int score, int points, int combo, int currentTimer)

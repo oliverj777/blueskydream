@@ -20,12 +20,19 @@ namespace OllieJones
         private void Start()
         {
             List<GameObject> cards = GenerateCardPairsPrefab(gridSize);
-            BuildGrid(cards);
+            BuildGrid(gridSize, cards);
+        }
+
+        public Vector2Int GridSize()
+        {
+            return gridSize;
         }
 
         // Builds the card grid by instantiating and positioning card prefabs in a defined X/Y layout.
-        public void BuildGrid(List<GameObject> cards)
+        public void BuildGrid(Vector2Int gridSize, List<GameObject> cards)
         {
+            this.gridSize = gridSize;
+
             ClearGrid();
 
             int i = 0;
@@ -88,6 +95,28 @@ namespace OllieJones
                 list[i] = list[randomIndex];
                 list[randomIndex] = temp;
             }
+        }
+
+        //Helper. Finds the prefab based on its nameTag. Used for saveload
+        public GameObject GetCardPrefab(string nameTag)
+        {
+            foreach (GameObject card in prefabCards)
+            {
+                if (card.GetComponent<CardModule>().nameTag == nameTag) return card;
+            }
+
+            return null;
+        }
+
+        //Helper. Finds the runtime card based on its coordinates. Used for saveload
+        public CardModule GetCardModule(int x, int y)
+        {
+            foreach (CardModule card in runtimeStack)
+            {
+                if (card.Coordinates().x == x && card.Coordinates().y == y) return card;
+            }
+
+            return null;
         }
     }
 }

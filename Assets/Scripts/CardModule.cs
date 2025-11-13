@@ -42,6 +42,11 @@ namespace OllieJones
             return matched;
         }
 
+        public Vector2Int Coordinates()
+        {
+            return coordinate;
+        }
+
         public void FlipCard()
         {
             if (matched) return;

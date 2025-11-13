@@ -11,7 +11,7 @@ namespace OllieJones
         public static CardManager Instance;
 
         [SerializeField] private List<CardModule> selectedStack = new List<CardModule>();
-        [SerializeField] private GridManager grid;
+        public GridManager grid;
 
         // Public Events
         public UnityEvent<CardModule> OnEventCardSelected;
@@ -28,18 +28,23 @@ namespace OllieJones
 
         private void Start()
         {
-            StartCoroutine(CoroutineRevealOpening());
+            BuildGame();
         }
 
 
         private void BuildGame()
         {
-            //TODO, generate a valid list of cards and insert into the GridManager
+            StopGame();
+            List<GameObject> cards = grid.GenerateCardPairsPrefab(grid.GridSize());
+            grid.BuildGrid(grid.GridSize(), cards);
+            corRevealOpening = StartCoroutine(CoroutineRevealOpening());
         }
 
-        private void InjectGame()
+        public void InjectGame(Vector2Int gridSize, List<GameObject> cards)
         {
-            //TODO, used for save/load data
+            StopGame();
+            grid.BuildGrid(gridSize, cards);
+            corRevealOpening = StartCoroutine(CoroutineRevealOpening());
         }
 
         private void NewGame()
@@ -50,6 +55,11 @@ namespace OllieJones
         private void StopGame()
         {
             //TODO, clears any coroutines and game data
+            if(corRevealOpening != null)
+            {
+                StopCoroutine(corRevealOpening);
+                corRevealOpening = null;
+            }
         }
 
         // Called directly from the CardModule
@@ -63,7 +73,7 @@ namespace OllieJones
             CheckGameState();
         }
 
-
+        Coroutine corRevealOpening;
         IEnumerator CoroutineRevealOpening()
         {
             // Wait and flip cards
@@ -108,6 +118,7 @@ namespace OllieJones
 
                 OnEventCardsMatched?.Invoke(cardA, cardB);
 
+                // Check for game progress
                 if (HasMatchedAll())
                 {
                     Debug.Log("* WON *");

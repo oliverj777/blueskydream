@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ec4e4fe1f6dd40f6aee64d6e3060bda, type: 3}
   m_Name: Game Config
   m_EditorClassIdentifier: 
-  cardFlipSpeed: 0.25
-  pointsOnMatch: 10
-  pointsOnNoMatch: -1
-  comboMultiplier: 1
-  gameResetTime: 2
+  CardFlipTime: 0.25
+  StartingScore: 5
+  ComboPointMatch: 10
+  ComboPointNoMatch: -1
+  GameRevealTime: 3
+  GameResetTime: 2
+  GameMaxTimer: 30
+  RestartGameWithSameOrder: 1
+  ContinueComboScoreAcrossGames: 1

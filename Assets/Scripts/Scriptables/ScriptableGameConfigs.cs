@@ -13,6 +13,7 @@ namespace OllieJones
         public float CardFlipTime = 0.25f;
 
         [Header("Score Settings")]
+        public int StartingScore = 5;
         public int ComboPointMatch = 10;
         public int ComboPointNoMatch = -1;
 
@@ -23,6 +24,7 @@ namespace OllieJones
 
         [Header("Game Settings")]
         public bool RestartGameWithSameOrder = false; //If true, the game will restart with the same order of cards as before.
+        public bool ContinueComboScoreAcrossGames = true;
     }
 
 }

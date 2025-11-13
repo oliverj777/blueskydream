@@ -25,6 +25,10 @@ namespace OllieJones
         private bool gameStarted = false;
         private float fTimer = 0;
 
+        // Caching, for restart
+        private Vector2Int cGridSize;
+        private List<GameObject> cCards;
+
         // Moved to configs
         //readonly int comboPointMatch = 10;
         //readonly int comboPointNoMatch = -1;
@@ -71,12 +75,16 @@ namespace OllieJones
             corRevealOpening = StartCoroutine(CoroutineRevealOpening());
         }
 
-        public void InjectGame(Vector2Int gridSize, List<GameObject> cards)
+        public void InjectGame(Vector2Int gridSize, List<GameObject> cards, bool shuffle = false)
         {
             injected = true;
 
+            // Cache
+            cGridSize = gridSize;
+            cCards = cards;
+
             StopGame();
-            grid.BuildGrid(gridSize, cards);
+            grid.BuildGrid(gridSize, cards, shuffle);
             corRevealOpening = StartCoroutine(CoroutineRevealOpening());
             OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter, currentTimer);
         }
@@ -85,6 +93,11 @@ namespace OllieJones
         {
             currentLevel++;
             //TODO, add dynamic difficulty system
+
+            currentScore = Config().StartingScore;
+
+            if (Config().ContinueComboScoreAcrossGames == false)
+                comboCounter = 0;
 
             BuildGame();
         }
@@ -119,7 +132,22 @@ namespace OllieJones
 
         public void RestartGame()
         {
-            //TODO, add restart logic;
+            if(Config().RestartGameWithSameOrder)
+                InjectGame(cGridSize, cCards);
+
+            else
+            {
+                // We need to reshuffle the stack
+                InjectGame(cGridSize, cCards, true);
+            }
+
+            // Reset some game values to prevent errors
+            injected = false;
+            fTimer = Config().GameMaxTimer;
+            currentScore = Config().StartingScore;
+            comboCounter = 0;
+
+            OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter, currentTimer);
         }
 
 

@@ -32,11 +32,16 @@ namespace OllieJones
         }
 
         // Builds the card grid by instantiating and positioning card prefabs in a defined X/Y layout.
-        public void BuildGrid(Vector2Int gridSize, List<GameObject> cards)
+        public void BuildGrid(Vector2Int gridSize, List<GameObject> cards, bool shuffle = false)
         {
             this.gridSize = gridSize;
 
             ClearGrid();
+
+            if (shuffle)
+            {
+                Shuffle(cards);
+            }
 
             // Layout settings
             float canvasWidth = canvas.rect.width;

@@ -20,6 +20,7 @@ namespace OllieJones
         public int comboCounter = 0;
         public int currentScore;
         public int currentTimer;
+        public int magicCounter = 0;
 
         private bool injected = false;
         private bool gameStarted = false;
@@ -37,6 +38,7 @@ namespace OllieJones
         public UnityEvent<CardModule> OnEventCardSelected;
         public UnityEvent<CardModule, CardModule> OnEventCardsMatched;
         public UnityEvent<CardModule, CardModule> OnEventCardsNoMatch;
+        public UnityEvent<int> OnEventMagicCollected; //magicCounter
 
         public UnityEvent<int, int, int, int> OnEventGameLoopUpdate; //current score, points, combo, timer
 
@@ -57,7 +59,7 @@ namespace OllieJones
 
         private void Start()
         {
-            BuildGame();
+            NewGame();
         }
 
         public ScriptableGameConfigs Config()
@@ -89,6 +91,7 @@ namespace OllieJones
             OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter, currentTimer);
         }
 
+        [ContextMenu("Force NewGame")]
         public void NewGame()
         {
             currentLevel++;
@@ -152,6 +155,17 @@ namespace OllieJones
             OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter, currentTimer);
         }
 
+        // Will reset the timer/score only, and continue the same game
+        public void RecommenceGame(GameReport reason)
+        {
+            if(reason == GameReport.Lost_Timer)
+                fTimer = Config().GameMaxTimer;
+
+            if (reason == GameReport.Lost_Score)
+                currentScore = Config().StartingScore;
+
+            corRevealOpening = StartCoroutine(CoroutineRevealOpening());
+        }
 
 
         private void Update()
@@ -179,17 +193,30 @@ namespace OllieJones
             CheckGameState();
         }
 
+        public void SpendMagic(int amt)
+        {
+            magicCounter -= amt;
+            OnEventMagicCollected?.Invoke(magicCounter);
+        }
+
         // ---------- Game Drivers ---------- //
 
         Coroutine corRevealOpening;
         IEnumerator CoroutineRevealOpening()
         {
+            foreach (CardModule card in grid.RuntimeStack())
+            {
+                if (card.IsRevealed() == false)
+                    card.FlipCard();
+            }
+
             // Wait and flip cards
             yield return new WaitForSeconds(Config().GameRevealTime);
 
             foreach (CardModule card in grid.RuntimeStack())
             {
-                card.FlipCard();
+                if(card.IsRevealed())
+                    card.FlipCard();
             }
 
             StartGame();
@@ -250,6 +277,12 @@ namespace OllieJones
                 // Event triggers
                 OnEventCardsMatched?.Invoke(cardA, cardB);
                 OnEventGameLoopUpdate?.Invoke(currentScore, points, comboCounter, currentTimer);
+
+                if(cardA.IsMagic() || cardB.IsMagic())
+                {
+                    magicCounter++;
+                    OnEventMagicCollected?.Invoke(magicCounter);
+                }
 
                 // Check for game progress
                 if (HasMatchedAll())

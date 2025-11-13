@@ -57,6 +57,7 @@ namespace OllieJones
             //Serialise the game/cards into JSON children
             JSONObject json = new JSONObject();
             json["level"] = manager.currentLevel;
+            json["magic"] = manager.magicCounter;
             json["score"] = manager.currentScore;
             json["combo"] = manager.comboCounter;
             json["timer"] = manager.currentTimer;
@@ -106,6 +107,7 @@ namespace OllieJones
             }
 
             // Inject game score
+            manager.magicCounter = json["magic"].AsInt;
             manager.currentLevel = json["level"].AsInt;
             manager.currentScore = json["score"].AsInt;
             manager.comboCounter = json["combo"].AsInt;

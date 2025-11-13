@@ -43,9 +43,20 @@ namespace OllieJones
             return matched;
         }
 
+        public bool IsRevealed()
+        {
+            return !hidden;
+        }
+
         public bool IsEmpty()
         {
             if (string.IsNullOrEmpty(nameTag)) return true;
+            return false;
+        }
+
+        public bool IsMagic()
+        {
+            if (nameTag == "MAGIC") return true;
             return false;
         }
 
@@ -98,12 +109,12 @@ namespace OllieJones
             if (hidden)
             {
                 img.color = Color.gray;
-                graphic.enabled = false;
+                graphic.gameObject.SetActive(false);
             }
             else
             {
                 img.color = imgColor;
-                graphic.enabled = true;
+                graphic.gameObject.SetActive(true);
             }
 
             iTween.ValueTo(gameObject, iTween.Hash(

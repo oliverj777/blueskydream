@@ -11,11 +11,13 @@ namespace OllieJones
         [SerializeField] private TMP_Text scoreText;
         [SerializeField] private TMP_Text pointsText;
         [SerializeField] private TMP_Text timerText;
+        [SerializeField] private TMP_Text magicText;
 
         [Header("Lost Panel")]
         [SerializeField] private CanvasRenderer lostPanel;
         [SerializeField] private TMP_Text lostText;
         [SerializeField] private Button lostBtn;
+        [SerializeField] private Button lostContinueBtn;
 
         [Header("Won Panel")]
         [SerializeField] private CanvasRenderer wonPanel;
@@ -28,6 +30,8 @@ namespace OllieJones
             wonPanel.gameObject.SetActive(false);
 
             lostBtn.onClick.AddListener(HandlerButtonTryAgain);
+            lostContinueBtn.onClick.AddListener(HandlerButtonMagicContinue);
+
             wonBtn.onClick.AddListener(HandlerButtonNextGame);
         }
 
@@ -36,12 +40,15 @@ namespace OllieJones
             scoreText.text = "0";
             pointsText.text = "";
             timerText.text = "";
+            magicText.text = "0";
 
             // Subscribe to the game events
             CardManager.Instance.OnEventGameLoopUpdate.AddListener(HandlerOnGameLoopUpdate);
             CardManager.Instance.OnEventGameStart.AddListener(HandlerOnGameStart);
             CardManager.Instance.OnEventGameComplete.AddListener(HandlerOnGameComplete);
             CardManager.Instance.OnEventGameFailed.AddListener(HandlerOnGameFailed);
+
+            CardManager.Instance.OnEventMagicCollected.AddListener(HandlerOnMagicCollected);
         }
 
         private void Update()
@@ -71,6 +78,12 @@ namespace OllieJones
             }
         }
 
+        private void HandlerOnMagicCollected(int magic)
+        {
+            magicText.text = magic.ToString();
+        }
+
+
         private void HandlerOnGameStart()
         {
 
@@ -84,8 +97,10 @@ namespace OllieJones
             wonPanel.gameObject.SetActive(true);
         }
 
+        CardManager.GameReport cReason;
         private void HandlerOnGameFailed(CardManager.GameReport reason)
         {
+            cReason = reason;
             string msg = "On no!\n";
 
             if(reason == CardManager.GameReport.Lost_Score)
@@ -110,6 +125,15 @@ namespace OllieJones
             lostPanel.gameObject.SetActive(false);
             wonPanel.gameObject.SetActive(false);
 
+        }
+
+        private void HandlerButtonMagicContinue()
+        {
+            CardManager.Instance.SpendMagic(1);
+            CardManager.Instance.RecommenceGame(cReason);
+
+            lostPanel.gameObject.SetActive(false);
+            wonPanel.gameObject.SetActive(false);
         }
 
         private void HandlerButtonNextGame()

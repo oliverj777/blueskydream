@@ -54,6 +54,7 @@ namespace OllieJones
             StopGame();
             grid.BuildGrid(gridSize, cards);
             corRevealOpening = StartCoroutine(CoroutineRevealOpening());
+            OnEventGameLoopUpdate?.Invoke(currentScore, 0, comboCounter);
         }
 
         private void NewGame()

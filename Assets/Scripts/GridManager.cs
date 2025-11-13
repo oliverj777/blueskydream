@@ -143,12 +143,15 @@ namespace OllieJones
         //Helper. Finds the prefab based on its nameTag. Used for saveload
         public GameObject GetCardPrefab(string nameTag)
         {
+            if (string.IsNullOrEmpty(nameTag)) return prefabCardEmpty;
+
             foreach (GameObject card in prefabCards)
             {
                 if (card.GetComponent<CardModule>().nameTag == nameTag) return card;
             }
 
-            return null;
+            Debug.LogError($"Unable to find card prefab with nameTag: {nameTag}");
+            return prefabCardEmpty;
         }
 
         //Helper. Finds the runtime card based on its coordinates. Used for saveload
@@ -159,6 +162,7 @@ namespace OllieJones
                 if (card.Coordinates().x == x && card.Coordinates().y == y) return card;
             }
 
+            Debug.LogError($"Unable to find card module with coords: {x},{y}");
             return null;
         }
     }

@@ -960,6 +960,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectedStack: []
   grid: {fileID: 1908059040}
+  gameConfig: {fileID: 11400000, guid: a12817004e0d045a4b3111c82687d073, type: 2}
   currentLevel: 0
   comboCounter: 0
   currentScore: 0
@@ -990,3 +991,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c0681ed63d6e48b495b677377f8e64e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoSave: 1
+  autoLoad: 1

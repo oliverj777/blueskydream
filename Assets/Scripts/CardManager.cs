@@ -12,15 +12,17 @@ namespace OllieJones
 
         [SerializeField] private List<CardModule> selectedStack = new List<CardModule>();
         public GridManager grid;
+        [SerializeField] private ScriptableGameConfigs gameConfig;
 
         // Game Logic
         public int currentLevel = 0;
-        private float revealWait = 3;
+        //private float revealWait = 3; //TODO, make this dynamic based on level
         public int comboCounter = 0;
         public int currentScore;
 
-        readonly int comboPointMatch = 10;
-        readonly int comboPointNoMatch = -1;
+        // Moved to configs
+        //readonly int comboPointMatch = 10;
+        //readonly int comboPointNoMatch = -1;
 
         // Public Events
         public UnityEvent<CardModule> OnEventCardSelected;
@@ -34,11 +36,19 @@ namespace OllieJones
         {
             // Using singleton static instance for global access, but happy to work with dependency injection too.
             Instance = this;
+
+            if (grid == null) Debug.LogError("GridManager is not populated");
+            if (gameConfig == null) Debug.LogError("GameConfig file is not populated");
         }
 
         private void Start()
         {
             BuildGame();
+        }
+
+        public ScriptableGameConfigs Config()
+        {
+            return gameConfig;
         }
 
         private void BuildGame()
@@ -89,7 +99,7 @@ namespace OllieJones
         IEnumerator CoroutineRevealOpening()
         {
             // Wait and flip cards
-            yield return new WaitForSeconds(revealWait);
+            yield return new WaitForSeconds(Config().GameRevealTime);
 
             foreach (CardModule card in grid.RuntimeStack())
             {
@@ -118,7 +128,7 @@ namespace OllieJones
 
         IEnumerator CoroutineCheckGameState(CardModule cardA, CardModule cardB)
         {
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(Config().CardFlipTime);
 
             // Match
             if(cardA.nameTag == cardB.nameTag)
@@ -131,7 +141,7 @@ namespace OllieJones
 
                 // Increment combo
                 comboCounter++;
-                int points = comboPointMatch * (comboCounter);
+                int points = Config().ComboPointMatch * (comboCounter);
                 currentScore += points;
 
                 // Event triggers
@@ -145,13 +155,13 @@ namespace OllieJones
 
                     OnEventGameComplete?.Invoke();
 
-                    yield return new WaitForSeconds(2);
+                    yield return new WaitForSeconds(Config().GameResetTime);
                     NewGame();
                 }
             }
             else
             {
-                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(Config().CardFlipTime);
 
                 Debug.Log("No Match");
 
@@ -161,7 +171,7 @@ namespace OllieJones
 
                 // Reset combo
                 comboCounter = 0;
-                int points = comboPointNoMatch;
+                int points = Config().ComboPointNoMatch;
                 currentScore += points;
 
                 // Event triggers

@@ -84,7 +84,7 @@ namespace OllieJones
 
         IEnumerator CoroutineFlipCard()
         {
-            float flipTime = 0.25f;
+            float flipTime = CardManager.Instance.Config().CardFlipTime;
 
             iTween.ValueTo(gameObject, iTween.Hash(
                 "from", 1f,

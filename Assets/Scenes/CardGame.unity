@@ -386,6 +386,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1908059041}
+  - component: {fileID: 1908059042}
   - component: {fileID: 1908059040}
   m_Layer: 0
   m_Name: Managers
@@ -406,10 +407,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d8038ccbdeb34d0b963011cfdaf4645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: {x: 2, y: 3}
+  gridSize: {x: 3, y: 4}
   prefabCards:
   - {fileID: 8372554132849567661, guid: eae7e3db2b10e495194ab641e77c5f2d, type: 3}
   - {fileID: 7236561883130147660, guid: 82e80a3e4702c429687240030d688cce, type: 3}
+  - {fileID: 7236561883130147660, guid: a672b91df39804eb691e6e67420288a3, type: 3}
+  - {fileID: 7236561883130147660, guid: 70b5fde6ddbf54a6babc02e5b8eeac59, type: 3}
   canvas: {fileID: 817011012}
   runtimeStack: []
 --- !u!4 &1908059041
@@ -427,6 +430,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1908059042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908059039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 582b9ecc11f374a3cbd7c0a2286cdf39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4733990185715699418
 PrefabInstance:
   m_ObjectHideFlags: 0
